@@ -1,0 +1,43 @@
+{
+	"name": "PL_SOURCE_TO_SILVER_INNER",
+	"properties": {
+		"activities": [
+			{
+				"name": "Read table details",
+				"type": "Lookup",
+				"dependsOn": [],
+				"policy": {
+					"timeout": "0.12:00:00",
+					"retry": 2,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"source": {
+						"type": "AzureSqlSource",
+						"sqlReaderQuery": {
+							"value": "Select * From ctrl.table_config where table_id  = @{pipeline().parameters.table_id}",
+							"type": "Expression"
+						},
+						"queryTimeout": "02:00:00",
+						"partitionOption": "None"
+					},
+					"dataset": {
+						"referenceName": "ds_azuresql",
+						"type": "DatasetReference"
+					},
+					"firstRowOnly": false
+				}
+			}
+		],
+		"parameters": {
+			"table_id": {
+				"type": "string",
+				"defaultValue": "1"
+			}
+		},
+		"annotations": []
+	}
+}
