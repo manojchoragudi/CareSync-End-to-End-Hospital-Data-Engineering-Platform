@@ -74,6 +74,10 @@
 									"table_id": {
 										"value": "@item().table_id",
 										"type": "Expression"
+									},
+									"adf_run_id": {
+										"value": "@pipeline().parameters.adf_run_id",
+										"type": "Expression"
 									}
 								}
 							}
@@ -99,7 +103,7 @@
 									{
 										"type": "Query",
 										"text": {
-											"value": "Insert INTO ctrl.audit_log (adf_run_id,table_id,stage,status,start_time)\nVALUES('a1',@{item().table_id},'SOURCE_TO_SILVER','IN_PROGRESS',SYSUTCDATETIME())",
+											"value": "Insert INTO ctrl.audit_log (adf_run_id,table_id,stage,status,start_time)\nVALUES('@{pipeline().parameters.adf_run_id}',@{item().table_id},'SOURCE_TO_SILVER','IN_PROGRESS',SYSUTCDATETIME())",
 											"type": "Expression"
 										}
 									}
@@ -108,7 +112,7 @@
 							}
 						},
 						{
-							"name": "Script2",
+							"name": "Update Failed status",
 							"type": "Script",
 							"dependsOn": [
 								{
@@ -126,8 +130,20 @@
 								"secureInput": false
 							},
 							"userProperties": [],
+							"linkedServiceName": {
+								"referenceName": "LS_AzureSqlDatabase",
+								"type": "LinkedServiceReference"
+							},
 							"typeProperties": {
-								"scripts": [],
+								"scripts": [
+									{
+										"type": "Query",
+										"text": {
+											"value": "UPDATE ctrl.audit_log\nSET status= 'FAILED', end_time = SYSUTCDATETIME()\nwhere adf_run_id = '@{pipeline().parameters.adf_run_id}' and table_id = @{item().table_id}",
+											"type": "Expression"
+										}
+									}
+								],
 								"scriptBlockExecutionTimeout": "02:00:00"
 							}
 						}
@@ -139,6 +155,10 @@
 			"source_system": {
 				"type": "string",
 				"defaultValue": "neon_postgres"
+			},
+			"adf_run_id": {
+				"type": "string",
+				"defaultValue": "a3"
 			}
 		},
 		"variables": {
