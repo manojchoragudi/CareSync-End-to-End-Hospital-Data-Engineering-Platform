@@ -1,0 +1,12 @@
+{
+	"name": "adf-hospital-caresync",
+	"properties": {
+		"globalParameters": {
+			"email_recipient": {
+				"type": "string",
+				"value": "Choragudimanoj209@outlook.com"
+			}
+		}
+	},
+	"location": "indiasouthcentral"
+}
