@@ -287,6 +287,229 @@
 			]
 		},
 		{
+			"name": "[concat(parameters('factoryName'), '/PL_SEND_EMAIL')]",
+			"type": "Microsoft.DataFactory/factories/pipelines",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"activities": [
+					{
+						"name": "Read all table status",
+						"type": "Lookup",
+						"dependsOn": [],
+						"policy": {
+							"timeout": "0.12:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"source": {
+								"type": "AzureSqlSource",
+								"sqlReaderQuery": {
+									"value": "Select * from ctrl.audit_log where adf_run_id ='@{pipeline().parameters.adf_run_id}'",
+									"type": "Expression"
+								},
+								"queryTimeout": "02:00:00",
+								"partitionOption": "None"
+							},
+							"dataset": {
+								"referenceName": "ds_azuresql",
+								"type": "DatasetReference",
+								"parameters": {}
+							},
+							"firstRowOnly": false
+						}
+					},
+					{
+						"name": "Prepare email body header",
+						"type": "SetVariable",
+						"dependsOn": [],
+						"policy": {
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"variableName": "body_header",
+							"value": "Ingestion and transformation process for caresync project has been completed and below is the status"
+						}
+					},
+					{
+						"name": "Prepare email body footer",
+						"type": "SetVariable",
+						"dependsOn": [],
+						"policy": {
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"variableName": "body_footer",
+							"value": "For any support reach out to Senior Data Engineer chmkumar@gmail.com (Manoj Choragudi)"
+						}
+					},
+					{
+						"name": "Check overall fail count",
+						"type": "Lookup",
+						"dependsOn": [],
+						"policy": {
+							"timeout": "0.12:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"source": {
+								"type": "AzureSqlSource",
+								"sqlReaderQuery": {
+									"value": "Select \n    count(*) as count \nfrom \n    ctrl.audit_log \nwhere \n    adf_run_id = '@{pipeline().parameters.adf_run_id}'\nAND status != 'SUCCESS'",
+									"type": "Expression"
+								},
+								"queryTimeout": "02:00:00",
+								"partitionOption": "None"
+							},
+							"dataset": {
+								"referenceName": "ds_azuresql",
+								"type": "DatasetReference",
+								"parameters": {}
+							}
+						}
+					},
+					{
+						"name": "Preapare Email Subject",
+						"type": "SetVariable",
+						"dependsOn": [
+							{
+								"activity": "Check overall fail count",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							}
+						],
+						"policy": {
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"variableName": "email_subject",
+							"value": {
+								"value": "@{pipeline().globalParameters.env} | @{if(greater(activity('Check overall fail count').output.firstRow.count,0 ),'FAIL','SUCCESS' )} |CARESYNC MASTER RUN",
+								"type": "Expression"
+							}
+						}
+					},
+					{
+						"name": "Preapare logic app body",
+						"type": "SetVariable",
+						"dependsOn": [
+							{
+								"activity": "Preapare Email Subject",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							},
+							{
+								"activity": "Prepare email body footer",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							},
+							{
+								"activity": "Prepare email body header",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							},
+							{
+								"activity": "Read all table status",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							}
+						],
+						"policy": {
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"variableName": "logic_apps_body",
+							"value": {
+								"value": "{\n  \"subject\" : \"@{variables('email_subject')}\",\n  \"email\" : \"@{pipeline().globalParameters.email_recipient}\",\n  \"body_header\" : \"@{variables('body_header')}\",\n  \"body_footer\" : \" @{variables('body_footer')}\",\n  \"status_table\" :@{activity('Read all table status').output.value}\n}",
+								"type": "Expression"
+							}
+						}
+					},
+					{
+						"name": "SEND EMAIL",
+						"type": "WebActivity",
+						"dependsOn": [
+							{
+								"activity": "Preapare logic app body",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							}
+						],
+						"policy": {
+							"timeout": "0.12:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"method": "POST",
+							"headers": {
+								"Content-Type": "application/json"
+							},
+							"url": {
+								"value": "@pipeline().globalParameters.logic_apps_url",
+								"type": "Expression"
+							},
+							"body": {
+								"value": "@variables('logic_apps_body')",
+								"type": "Expression"
+							}
+						}
+					}
+				],
+				"policy": {
+					"elapsedTimeMetric": {}
+				},
+				"parameters": {
+					"adf_run_id": {
+						"type": "string",
+						"defaultValue": "b7874283-1d12-460c-84af-2ca378a69a58"
+					}
+				},
+				"variables": {
+					"body_header": {
+						"type": "String"
+					},
+					"body_footer": {
+						"type": "String"
+					},
+					"email_subject": {
+						"type": "String"
+					},
+					"logic_apps_body": {
+						"type": "String"
+					}
+				},
+				"annotations": []
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/datasets/ds_azuresql')]"
+			]
+		},
+		{
 			"name": "[concat(parameters('factoryName'), '/PL_SILVER_TO_GOLD')]",
 			"type": "Microsoft.DataFactory/factories/pipelines",
 			"apiVersion": "2018-06-01",
