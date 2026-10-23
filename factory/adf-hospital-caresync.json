@@ -5,6 +5,10 @@
 			"email_recipient": {
 				"type": "string",
 				"value": "Choragudimanoj209@outlook.com"
+			},
+			"env": {
+				"type": "string",
+				"value": "DEV"
 			}
 		}
 	},
