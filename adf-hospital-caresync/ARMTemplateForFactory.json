@@ -42,6 +42,10 @@
 		"LS_PostgreSql_properties_typeProperties_username": {
 			"type": "string",
 			"defaultValue": "neondb_owner"
+		},
+		"RestService1_properties_typeProperties_url": {
+			"type": "string",
+			"defaultValue": "https://raw.githubusercontent.com/"
 		}
 	},
 	"variables": {
@@ -1007,6 +1011,23 @@
 										],
 										"scriptBlockExecutionTimeout": "02:00:00"
 									}
+								},
+								{
+									"name": "Update PIpeline Failed Status",
+									"type": "Fail",
+									"dependsOn": [
+										{
+											"activity": "INGEST FROM SOURCE TO SILVER",
+											"dependencyConditions": [
+												"Failed"
+											]
+										}
+									],
+									"userProperties": [],
+									"typeProperties": {
+										"message": "Inner pipeline failed",
+										"errorCode": "500"
+									}
 								}
 							]
 						}
@@ -1331,6 +1352,21 @@
 			"dependsOn": [
 				"[concat(variables('factoryId'), '/linkedServices/LS_AzureKeyVault')]"
 			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/RestService1')]",
+			"type": "Microsoft.DataFactory/factories/linkedServices",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"annotations": [],
+				"type": "RestService",
+				"typeProperties": {
+					"url": "[parameters('RestService1_properties_typeProperties_url')]",
+					"enableServerCertificateValidation": true,
+					"authenticationType": "Anonymous"
+				}
+			},
+			"dependsOn": []
 		}
 	]
 }

@@ -31,6 +31,9 @@
 		},
 		"LS_PostgreSql_properties_typeProperties_username": {
 			"value": "neondb_owner"
+		},
+		"RestService1_properties_typeProperties_url": {
+			"value": "https://raw.githubusercontent.com/"
 		}
 	}
 }
