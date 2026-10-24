@@ -659,14 +659,6 @@ Check:
 
 ---
 
-## License
-
-This project is provided for **educational, portfolio, and demonstration purposes**.
-
-If you intend to use this project commercially, review and define an appropriate open-source license and ensure that all source datasets and third-party components permit such use.
-
----
-
 ## 👨‍💻 Author
 
 **Manoj Kumar Choragudi**
