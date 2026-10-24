@@ -1,0 +1,31 @@
+insurance_provider_id,provider_name,provider_type,contact_email,coverage_region
+1,BlueShield Health,PPO,contact@blueshieldhealth.example,National
+2,Aetna Wellness,HMO,support@aetnawellness.example,National
+3,UnitedCare Insurance,PPO,help@unitedcareins.example,National
+4,Cigna Health Partners,HMO,info@cignahealthpartners.example,Regional - South
+5,Medicare Government Plan,Government,contactus@medicare.example,National
+6,HealthFirst PPO,PPO,contact@healthfirstppo.example,Regional - South
+7,Humana Care Plus,HMO,support@humanacareplus.example,National
+8,Kaiser Permanente Select,HMO,info@kpselect.example,Regional - West
+9,Anthem BlueCross,PPO,contact@anthembluecross.example,Regional - West
+10,Medicaid State Plan,Government,support@medicaidstate.example,National
+11,TRICARE Military Health,Government,support@tricare.example,National
+12,Molina Community Health,HMO,help@molinahealth.example,Regional - South
+13,Oscar Health Direct,PPO,contact@oscarhealth.example,National
+14,WellCare Advantage,HMO,support@wellcareadvantage.example,Regional - South
+15,CareFirst BlueCross,PPO,info@carefirstbc.example,Regional - Northeast
+16,Centene Health Access,HMO,contact@centenehealth.example,National
+17,EmblemHealth Choice,PPO,updates@emblemhealth.example,Regional - Northeast
+18,Highmark Wholecare,HMO,help@highmarkwholecare.example,Regional - Northeast
+19,Independence Blue Cross,PPO,contact@ibx.example,Regional - Northeast
+20,SunLife Regional Health,PPO,support@sunlifehealth.example,Regional - South
+21,Providence Health Plan,HMO,info@providencehealth.example,Regional - West
+22,PacificSource Health,PPO,contact@pacificsource.example,Regional - West
+23,Baylor Scott Health Plan,PPO,support@baylorscotthealth.example,Regional - South
+24,Ascension Care Network,HMO,help@ascensioncare.example,National
+25,Elevance Health Advantage,HMO,contact@elevancehealth.example,National
+26,Bright Health Alliance,PPO,contact@brighthealthalliance.example,Regional - Midwest
+27,Clover Health Network,HMO,support@cloverhealthnetwork.example,Regional - Northeast
+28,Sentara Health Plans,PPO,info@sentarahealthplans.example,Regional - South
+29,GeoBlue International,PPO,contact@geoblueintl.example,National
+30,Devoted Health Senior,HMO,support@devotedhealthsenior.example,National
