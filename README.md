@@ -8,6 +8,15 @@ The project implements a metadata-driven ETL/ELT architecture to ingest hospital
 
 The solution supports both **initial/full loads and incremental loads**, making the pipeline scalable and reusable across multiple hospital datasets and source systems.
 
+## 📊 Live Dashboard
+
+[![CareSync Lab Dashboard](https://img.shields.io/badge/Live%20Dashboard-CareSync%20Lab%20Results-2f6fd6?style=for-the-badge&logo=databricks&logoColor=white)](https://claude.ai/artifact/PJv1DPg7ixzKEz95d6WQ3k)
+
+**[👉 View the CareSync Lab Results Dashboard](https://claude.ai/artifact/PJv1DPg7ixzKEz95d6WQ3k)**
+
+Covers 8,248 lab tests across 50 hospitals (Jan 2025 – Sep 2026): monthly volume, normal vs abnormal vs critical split, test types, hospital comparison, and patient trends.
+
+
 ---
 
 ## Features
